@@ -27,7 +27,7 @@ closeButton.addEventListener('click', () => {
     window.close();
 });
 panel.addEventListener('click', async (event) => {
-    panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
+    panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY, panel));
     syncBands(getBands());
 });
 resetButton.addEventListener('click', async () => {
@@ -71,7 +71,7 @@ function setUI(modifiers: modifiers) {
 function setBands(bands: band[]) {
     panel.replaceChildren();
     for(const band of bands) {
-        const slider = createSliderWithUpdater(0, 0);
+        const slider = createSliderWithUpdater(0, 0, panel);
         panel.appendChild(slider);
         setFrequency(slider, band.frequency);
         setGain(slider, band.gain);
@@ -126,8 +126,8 @@ function calculatePresetBands(preset: string) {
     return bands;
 }
 
-function createSliderWithUpdater(x: number, y: number) {
-    const slider = createSlider(x, y);
+function createSliderWithUpdater(x: number, y: number, boundingBox: HTMLElement) {
+    const slider = createSlider(x, y, boundingBox);
     slider.addEventListener('change', () => {
         syncBands(getBands());
     });

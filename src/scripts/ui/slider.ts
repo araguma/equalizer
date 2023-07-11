@@ -1,6 +1,6 @@
 import config from '../config.js';
 
-function createSlider(x: number, y: number, diameter = 16) {
+function createSlider(x: number, y: number, boundingBox: HTMLElement, diameter = 16) {
     const slider = document.createElement('div');
     const changeEvent = new Event('change');
     const radius = diameter / 2;
@@ -33,9 +33,14 @@ function createSlider(x: number, y: number, diameter = 16) {
     slider.addEventListener('click', (event) => {
         event.stopPropagation();
     });
+
+    const xMin = boundingBox.offsetLeft;
+    const yMin = boundingBox.offsetTop;
+    const xMax = xMin + boundingBox.offsetWidth - diameter;
+    const yMax = yMin + boundingBox.offsetHeight - diameter;
     slider.classList.add('slider');
-    slider.style.left = `${x - radius}px`;
-    slider.style.top = `${y - radius}px`;
+    slider.style.left = `${contain(x - radius, xMin, xMax)}px`
+    slider.style.top = `${contain(y - radius, yMin, yMax)}px`;
     slider.style.width = `${diameter}px`;
     slider.style.height = `${diameter}px`;
     return slider;
