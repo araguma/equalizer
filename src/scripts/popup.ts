@@ -19,7 +19,9 @@ const swapButton = document.getElementById('swap') as HTMLImageElement;
 const presetSelect = document.getElementById('preset') as HTMLSelectElement;
 
 (async () => {
-    setUI(await sendMessage('get', 'getModifiers'));    
+    setUI(await sendMessage('get', 'getModifiers'));
+    websiteDisplay.innerText = await sendMessage('get', 'getWebsiteURL');
+    songDisplay.innerText = await sendMessage('get', 'getWebsiteTitle');
 })();
 
 closeButton.addEventListener('click', () => {
