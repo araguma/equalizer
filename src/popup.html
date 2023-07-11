@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Equalizer</title>
+        <link rel="stylesheet" href="styles/popup.css">
+        <script type="module" src="scripts/popup.js"></script>
+    </head>
+    <body>
+        <div id="content">
+            <div id="now-playing">
+                <div id="website"></div>
+                <div id="song"></div>
+            </div>
+            <div id="panel"></div>
+            <div id="modifiers">
+                <img id="reset" src="assets/ui/reset.png" title="Reset modifiers">
+                <img id="mono" src="assets/ui/mono-disabled.png" title="Toggle mono audio">
+                <img id="swap" src="assets/ui/swap-disabled.png" title="Swap channels">
+                <select id="preset" title="Use preset">
+                    <option value="none">None</option>
+                    <option value="bass-boost">Bass Boost</option>
+                    <option value="random">Random</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+        </div>
+        <img id="close" src="assets/ui/close.png">
+    </body>
+</html>

@@ -1,0 +1,5 @@
+node_modules/
+dist/
+# Songs folder contains potentially copyrighted music
+# Will from .gitignore once I find a suitable non-copyrighted song for testing
+songs/

@@ -1,0 +1,67 @@
+body {
+    font: 12px "Segoe UI", Arial, sans-serif;
+    color: #FFF;
+    background-color: #292A2D;
+    margin: 0px;
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    width: 480px;
+}
+
+#now-playing {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    padding: 12px;
+}
+#song {
+    font-weight: bold;
+}
+
+#panel {
+    height: 256px;
+}
+.slider {
+    position: absolute;
+    background-color: #9AA0A6;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+}
+.slider:hover {
+    cursor: grab;
+}
+
+#modifiers {
+    display: flex;
+}
+#modifiers > *:hover {
+    background-color: #414245;
+}
+#preset {
+    flex: 1;
+    font: 12px "Segoe UI", Arial, sans-serif;
+    color: #FFF;
+    appearance: none;
+    background: url('../assets/ui/expand.png') no-repeat 100% 50%;
+    padding-right: 40px;
+    border: none;
+    outline: none;
+    text-align: right;
+}
+#preset:not(:hover) {
+    background-color: #292A2D;
+}
+
+#close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+#close:hover {
+    background-color: #414245;
+    border-radius: 50%;
+}

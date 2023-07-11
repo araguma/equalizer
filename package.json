@@ -1,0 +1,25 @@
+{
+  "name": "equalizer",
+  "version": "1.0.0",
+  "description": "Chrome equalizer extension",
+  "main": "index.js",
+  "scripts": {
+    "clean": "npx du rm -rf dist/ && npx du mkdir dist/",
+    "build": "npx du cp -rfi /.ts/ src/ dist/ && npx tsc",
+    "watch": "npm run build && npx du concurrent \"npx du cp -rfwi /.ts/ src/ dist/\" \"npx tsc -w\"",
+    "test": "echo \"Hosting test website at http://localhost:3000/\" && npx du concurrent \"npm run watch\" \"npx du server test/\""
+  },
+  "keywords": [
+    "chrome",
+    "equalizer",
+    "extension"
+  ],
+  "author": "araguma",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.240",
+    "@types/node": "^20.4.1",
+    "dev-utils": "github:araguma/npm-dev-utils",
+    "typescript": "^5.1.6"
+  }
+}
