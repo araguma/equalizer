@@ -111,6 +111,12 @@ function getBands() {
     return bands;
 }
 
+async function syncBands() {
+    const bands = getBands();
+    const modifiers = await sendMessage('modify', 'setBands', bands);
+    setBands(modifiers.bands);
+}
+
 function calculatePresetBands(preset: string) {
     const bands: band[] = [];
     presetGains[preset].forEach((gain, index) => {
@@ -124,12 +130,6 @@ function calculatePresetBands(preset: string) {
 
 function createSliderWithUpdater(x: number, y: number) {
     const slider = createSlider(x, y);
-    slider.addEventListener('mousedown', async (event) => {
-        if(event.button === 2)
-            setBands((await sendMessage('modify', 'setBands', getBands())).bands);
-    });
-    slider.addEventListener('mouseup', async () => {
-        setBands((await sendMessage('modify', 'setBands', getBands())).bands);
-    });
+    slider.addEventListener('change', syncBands);
     return slider;
 }

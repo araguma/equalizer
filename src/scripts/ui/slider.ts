@@ -4,9 +4,9 @@ const diameter = radius * 2;
 const minFrequency = 32;
 const maxFrequency = 16384;
 
-// TODO: Prevent context menu from appearing when deleting a slider
 function createSlider(x: number, y: number) {
     const slider = document.createElement('div');
+    const changeEvent = new Event('change');
     const handleMouseMove = (event: MouseEvent) => {
         const parent = slider.parentElement!;
         const xMin = parent.offsetLeft;
@@ -19,6 +19,7 @@ function createSlider(x: number, y: number) {
     const handleMouseUp = () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        slider.dispatchEvent(changeEvent);
     }
     slider.addEventListener('mousedown', (event) => {
         event.preventDefault();
@@ -26,8 +27,11 @@ function createSlider(x: number, y: number) {
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
         }
-        else if(event.button === 2)
-            slider.parentElement!.removeChild(slider);
+    });
+    slider.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        slider.parentElement!.removeChild(slider);
+        slider.dispatchEvent(changeEvent);
     });
     slider.addEventListener('click', (event) => {
         event.stopPropagation();
