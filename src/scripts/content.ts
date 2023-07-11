@@ -33,19 +33,22 @@ function handleModifyMessage(message: any, sendResponse: (response: any) => void
             modifiers.mono = false;
             modifiers.swap = false;
             modifiers.bands = [];
+            sendResponse(modifiers);
             break;
         case 'toggleMono':
             modifiers.mono = !modifiers.mono;
+            sendResponse(modifiers.mono);
             break;
         case 'toggleSwap':
             modifiers.swap = !modifiers.swap;
+            sendResponse(modifiers.swap);
             break;
         case 'setBands':
             modifiers.bands = message.data;
+            sendResponse(modifiers.bands);
             break;
     }
     updateEqualizerChain(modifiers);
-    sendResponse(modifiers);
 }
 
 function handleGetMessage(message: any, sendResponse: (response: any) => void) {

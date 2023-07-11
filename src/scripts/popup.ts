@@ -28,16 +28,16 @@ closeButton.addEventListener('click', () => {
 });
 panel.addEventListener('click', async (event) => {
     panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
-    setBands((await sendMessage('modify', 'setBands', getBands())).bands);
+    setBands((await sendMessage('modify', 'setBands', getBands())));
 });
 resetButton.addEventListener('click', async () => {
     setUI(await sendMessage('modify', 'reset'));
 });
 monoButton.addEventListener('click', async () => {
-    setMono((await sendMessage('modify', 'toggleMono')).mono);
+    setMono((await sendMessage('modify', 'toggleMono')));
 });
 swapButton.addEventListener('click', async () => {
-    setSwap((await sendMessage('modify', 'toggleSwap')).swap);
+    setSwap((await sendMessage('modify', 'toggleSwap')));
 });
 presetSelect.addEventListener('change', async () => {
     if(presetSelect.value === 'custom')
