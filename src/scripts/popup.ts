@@ -1,7 +1,6 @@
 import { band, modifiers } from 'types';
 import { createSlider, getFrequency, getGain, setFrequency, setGain } from './ui/slider.js';
 
-const presetFrequencies = [32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384];
 const presetGains: {
     [preset: string]: number[];
 } = {
@@ -44,7 +43,7 @@ presetSelect.addEventListener('change', async () => {
     const bands: band[] = [];
     presetGains[presetSelect.value].forEach((gain, index) => {
         bands.push({
-            frequency: presetFrequencies[index],
+            frequency: 32 * 2 ** index,
             gain: gain,
         });
     });
