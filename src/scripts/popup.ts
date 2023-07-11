@@ -26,11 +26,9 @@ const presetSelect = document.getElementById('preset') as HTMLSelectElement;
 closeButton.addEventListener('click', () => {
     window.close();
 });
-panel.addEventListener('click', (event) => {
+panel.addEventListener('click', async (event) => {
     panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
-    const bands = getBands();
-    sendMessage('modify', 'setBands', bands);
-    setPresetSelect(bands);
+    setBands((await sendMessage('modify', 'setBands', getBands())).bands);
 });
 resetButton.addEventListener('click', async () => {
     setUI(await sendMessage('modify', 'reset'));
@@ -71,8 +69,6 @@ function setUI(modifiers: modifiers) {
 }
 
 function setBands(bands: band[]) {
-    setPresetSelect(bands);
-
     panel.replaceChildren();
     for(const band of bands) {
         const slider = createSliderWithUpdater(0, 0);
@@ -80,6 +76,8 @@ function setBands(bands: band[]) {
         setFrequency(slider, band.frequency);
         setGain(slider, band.gain);
     }
+
+    setPresetSelect(bands);
 }
 
 function setMono(enabled: boolean) {
@@ -126,10 +124,12 @@ function calculatePresetBands(preset: string) {
 
 function createSliderWithUpdater(x: number, y: number) {
     const slider = createSlider(x, y);
-    slider.addEventListener('mouseup', () => {
-        const bands = getBands();
-        sendMessage('modify', 'setBands', bands);
-        setPresetSelect(bands);
+    slider.addEventListener('mousedown', async (event) => {
+        if(event.button === 2)
+            setBands((await sendMessage('modify', 'setBands', getBands())).bands);
+    });
+    slider.addEventListener('mouseup', async () => {
+        setBands((await sendMessage('modify', 'setBands', getBands())).bands);
     });
     return slider;
 }

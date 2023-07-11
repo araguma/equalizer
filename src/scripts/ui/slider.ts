@@ -27,7 +27,7 @@ function createSlider(x: number, y: number) {
             document.addEventListener('mouseup', handleMouseUp);
         }
         else if(event.button === 2)
-        slider.parentElement!.removeChild(slider);
+            slider.parentElement!.removeChild(slider);
     });
     slider.addEventListener('click', (event) => {
         event.stopPropagation();
