@@ -8,7 +8,7 @@ type modifiers = {
     }[];
 };
 
-const audioContext = new AudioContext();
+let audioContext: AudioContext | null = null;
 const mediaElementSourceMap: Map<HTMLMediaElement, MediaElementAudioSourceNode> = new Map();
 let modifiers: modifiers = {
     mono: false,
@@ -18,6 +18,17 @@ let modifiers: modifiers = {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     switch(message.type) {
+        case 'modify':
+            handleModifyMessage(message, sendResponse);
+            break;
+        case 'get':
+            handleGetMessage(message, sendResponse);
+            break;
+    }
+});
+
+function handleModifyMessage(message: any, sendResponse: (response: any) => void) {
+    switch(message.content) {
         case 'reset':
             modifiers.mono = false;
             modifiers.swap = false;
@@ -30,11 +41,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             modifiers.swap = !modifiers.swap;
             break;
         case 'setBands':
-            modifiers.bands = message.bands;
+            modifiers.bands = message.data;
             break;
     }
-    sendResponse(modifiers);
-    
+
+    audioContext = audioContext ?? new AudioContext();
     audioContext.resume();
     const equalizerChain = createEqualizerChain(audioContext, modifiers);
     const mediaElements = document.querySelectorAll<HTMLMediaElement>('video, audio');
@@ -47,7 +58,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         mediaElementSourceMap.set(mediaElement, mediaElementSource);
     }
     equalizerChain.tail.connect(audioContext.destination);
-});
+
+    sendResponse(modifiers);
+}
+
+function handleGetMessage(message: any, sendResponse: (response: any) => void) {
+    switch(message.content) {
+        case 'getModifiers':
+            sendResponse(modifiers);
+            break;
+    }
+}
 
 function createEqualizerChain(audioContext: AudioContext, modifiers: modifiers) {
     const equalizerChain: {

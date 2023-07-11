@@ -19,7 +19,7 @@ const swapButton = document.getElementById('swap') as HTMLImageElement;
 const presetSelect = document.getElementById('preset') as HTMLSelectElement;
 
 (async () => {
-    setUI(await sendMessage({ type: 'getModifiers' }));    
+    setUI(await sendMessage('get', 'getModifiers'));    
 })();
 
 closeButton.addEventListener('click', () => {
@@ -27,16 +27,16 @@ closeButton.addEventListener('click', () => {
 });
 panel.addEventListener('click', (event) => {
     panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
-    sendMessage({ type: 'setBands', bands: getBands() });
+    sendMessage('modify', 'setBands', getBands());
 });
 resetButton.addEventListener('click', async () => {
-    setUI(await sendMessage({ type: 'reset' }));
+    setUI(await sendMessage('modify', 'reset'));
 });
 monoButton.addEventListener('click', async () => {
-    setMono((await sendMessage({ type: 'toggleMono' })).mono);
+    setMono((await sendMessage('modify', 'toggleMono')).mono);
 });
 swapButton.addEventListener('click', async () => {
-    setSwap((await sendMessage({ type: 'toggleSwap' })).swap);
+    setSwap((await sendMessage('modify', 'toggleSwap')).swap);
 });
 presetSelect.addEventListener('change', async () => {
     const bands: band[] = [];
@@ -46,12 +46,16 @@ presetSelect.addEventListener('change', async () => {
             gain: gain,
         });
     });
-    setBands((await sendMessage({ type: 'setBands', bands: bands })).bands);
+    setBands((await sendMessage('modify', 'setBands', bands)).bands);
 });
 
-async function sendMessage(message: any) {
+async function sendMessage(type: string, content: string, data?: any) {
     const activeTab = (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
-    return chrome.tabs.sendMessage(activeTab.id!, message);
+    return chrome.tabs.sendMessage(activeTab.id!, {
+        type: type,
+        content: content,
+        data: data,
+    });
 }
 
 function setUI(modifiers: modifiers) {
@@ -95,7 +99,7 @@ function getBands() {
 function createSliderWithUpdater(x: number, y: number) {
     const slider = createSlider(x, y);
     slider.addEventListener('mouseup', () => {
-        sendMessage({ type: 'setBands', bands: getBands() });
+        sendMessage('modify', 'setBands', getBands());
     });
     return slider;
 }
