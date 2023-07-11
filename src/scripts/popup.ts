@@ -1,4 +1,4 @@
-import { band, modifiers } from 'types';
+import { band, modifiers } from './types.js';
 import { createSlider, getFrequency, getGain, setFrequency, setGain } from './ui/slider.js';
 
 const presetGains: {

@@ -1,12 +1,9 @@
-// TODO: Prevent hardcoding of values
-const radius = 8;
-const diameter = radius * 2;
-const minFrequency = 32;
-const maxFrequency = 16384;
+import config from '../config.js';
 
-function createSlider(x: number, y: number) {
+function createSlider(x: number, y: number, diameter = 16) {
     const slider = document.createElement('div');
     const changeEvent = new Event('change');
+    const radius = diameter / 2;
     const handleMouseMove = (event: MouseEvent) => {
         const parent = slider.parentElement!;
         const xMin = parent.offsetLeft;
@@ -39,34 +36,40 @@ function createSlider(x: number, y: number) {
     slider.classList.add('slider');
     slider.style.left = `${x - radius}px`;
     slider.style.top = `${y - radius}px`;
+    slider.style.width = `${diameter}px`;
+    slider.style.height = `${diameter}px`;
     return slider;
 }
 
 function getFrequency(slider: HTMLElement) {
     const parent = slider.parentElement!;
     const xOffset = parent.offsetLeft;
+    const diameter = parseInt(slider.style.width);
     const x = parseInt(slider.style.left) - xOffset;
-    return mapExponential(x, 0, parent.offsetWidth - diameter, minFrequency, maxFrequency);
+    return mapExponential(x, 0, parent.offsetWidth - diameter, config.minFrequency, config.maxFrequency);
 }
 
 function getGain(slider: HTMLElement) {
     const parent = slider.parentElement!;
     const yOffset = parent.offsetTop;
+    const diameter = parseInt(slider.style.height);
     const y = parseInt(slider.style.top) - yOffset;
-    return mapLinear(y, 0, parent.offsetHeight - diameter, 10, -10);
+    return mapLinear(y, 0, parent.offsetHeight - diameter, config.maxGain, config.minGain);
 }
 
 function setFrequency(slider: HTMLElement, frequency: number) {
     const parent = slider.parentElement!;
     const xOffset = parent.offsetLeft;
-    const x = mapLogarithmic(frequency, minFrequency, maxFrequency, 0, parent.offsetWidth - diameter);
+    const diameter = parseInt(slider.style.width);
+    const x = mapLogarithmic(frequency, config.minFrequency, config.maxFrequency, 0, parent.offsetWidth - diameter);
     slider.style.left = `${x + xOffset}px`;
 }
 
 function setGain(slider: HTMLElement, gain: number) {
     const parent = slider.parentElement!;
     const yOffset = parent.offsetTop;
-    const y = mapLinear(gain, 10, -10, 0, parent.offsetHeight - diameter);
+    const diameter = parseInt(slider.style.height);
+    const y = mapLinear(gain, config.maxGain, config.minGain, 0, parent.offsetHeight - diameter);
     slider.style.top = `${y + yOffset}px`;
 }
 

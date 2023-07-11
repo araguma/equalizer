@@ -28,8 +28,6 @@ body {
     position: absolute;
     background-color: #9AA0A6;
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
 }
 .slider:hover {
     cursor: grab;
