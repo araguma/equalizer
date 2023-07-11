@@ -42,7 +42,7 @@ function getFrequency(slider: HTMLElement) {
     const parent = slider.parentElement!;
     const xOffset = parent.offsetLeft;
     const x = parseInt(slider.style.left) - xOffset;
-    return mapLogarithmic(x, 0, parent.offsetWidth - diameter, minFrequency, maxFrequency);
+    return mapExponential(x, 0, parent.offsetWidth - diameter, minFrequency, maxFrequency);
 }
 
 function getGain(slider: HTMLElement) {
@@ -72,6 +72,10 @@ function contain(value: number, min: number, max: number) {
 
 function mapLinear(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {
     return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+function mapExponential(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {
+    return Math.pow(outMax / outMin, (value - inMin) / (inMax - inMin)) * outMin;
 }
 
 function mapLogarithmic(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {

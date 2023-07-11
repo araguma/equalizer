@@ -26,8 +26,8 @@ closeButton.addEventListener('click', () => {
     window.close();
 });
 panel.addEventListener('click', (event) => {
-    console.log(getBands());
-    panel.appendChild(createSlider(event.clientX, event.clientY));
+    panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
+    sendMessage({ type: 'setBands', bands: getBands() });
 });
 resetButton.addEventListener('click', async () => {
     setUI(await sendMessage({ type: 'reset' }));
@@ -75,7 +75,7 @@ function setSwap(enabled: boolean) {
 function setBands(bands: band[]) {
     panel.replaceChildren();
     for(const band of bands) {
-        const slider = createSlider(0, 0);
+        const slider = createSliderWithUpdater(0, 0);
         panel.appendChild(slider);
         setFrequency(slider, band.frequency);
         setGain(slider, band.gain);
@@ -90,4 +90,12 @@ function getBands() {
             gain: getGain(slider as HTMLElement),
         });
     return bands;
+}
+
+function createSliderWithUpdater(x: number, y: number) {
+    const slider = createSlider(x, y);
+    slider.addEventListener('mouseup', () => {
+        sendMessage({ type: 'setBands', bands: getBands() });
+    });
+    return slider;
 }
