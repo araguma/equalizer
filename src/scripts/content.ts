@@ -37,8 +37,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     audioContext.resume();
     const equalizerChain = createEqualizerChain(audioContext, modifiers);
-    if(equalizerChain === null)
-        return;
     const mediaElements = document.querySelectorAll<HTMLMediaElement>('video, audio');
     for(const mediaElement of mediaElements) {
         const mediaElementSource = mediaElementSourceMap.has(mediaElement) ?
@@ -52,7 +50,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function createEqualizerChain(audioContext: AudioContext, modifiers: modifiers) {
-    const equalizerChain = [];
+    const equalizerChain: {
+        head: AudioNode;
+        tail: AudioNode;
+    }[] = [createPlaceholderChain(audioContext)];
     if(modifiers.mono)
         equalizerChain.push(createMonoChain(audioContext));
     if(modifiers.swap && !modifiers.mono)
@@ -61,10 +62,18 @@ function createEqualizerChain(audioContext: AudioContext, modifiers: modifiers) 
         equalizerChain.push(createBandChain(audioContext, modifiers.bands));
     for(let i = 0; i < equalizerChain.length - 1; i ++)
         equalizerChain[i].tail.connect(equalizerChain[i + 1].head);
-    return equalizerChain.length === 0 ? null : {
+    return {
         head: equalizerChain[0].head,
         tail: equalizerChain[equalizerChain.length - 1].tail,
     };
+}
+
+function createPlaceholderChain(audioContext: AudioContext) {
+    const gain = audioContext.createGain();
+    return {
+        head: gain,
+        tail: gain,
+    }
 }
 
 function createMonoChain(audioContext: AudioContext) {
