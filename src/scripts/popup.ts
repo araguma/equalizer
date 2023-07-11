@@ -28,7 +28,9 @@ closeButton.addEventListener('click', () => {
 });
 panel.addEventListener('click', (event) => {
     panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY));
-    sendMessage('modify', 'setBands', getBands());
+    const bands = getBands();
+    sendMessage('modify', 'setBands', bands);
+    setPresetSelect(bands);
 });
 resetButton.addEventListener('click', async () => {
     setUI(await sendMessage('modify', 'reset'));
@@ -40,6 +42,9 @@ swapButton.addEventListener('click', async () => {
     setSwap((await sendMessage('modify', 'toggleSwap')).swap);
 });
 presetSelect.addEventListener('change', async () => {
+    if(presetSelect.value === 'custom')
+        return;
+
     const bands: band[] = [];
     presetGains[presetSelect.value].forEach((gain, index) => {
         bands.push({
@@ -60,9 +65,21 @@ async function sendMessage(type: string, content: string, data?: any) {
 }
 
 function setUI(modifiers: modifiers) {
+    setBands(modifiers.bands);
     setMono(modifiers.mono);
     setSwap(modifiers.swap);
-    setBands(modifiers.bands);
+}
+
+function setBands(bands: band[]) {
+    setPresetSelect(bands);
+
+    panel.replaceChildren();
+    for(const band of bands) {
+        const slider = createSliderWithUpdater(0, 0);
+        panel.appendChild(slider);
+        setFrequency(slider, band.frequency);
+        setGain(slider, band.gain);
+    }
 }
 
 function setMono(enabled: boolean) {
@@ -77,13 +94,12 @@ function setSwap(enabled: boolean) {
         'assets/ui/swap-disabled.png';
 }
 
-function setBands(bands: band[]) {
-    panel.replaceChildren();
-    for(const band of bands) {
-        const slider = createSliderWithUpdater(0, 0);
-        panel.appendChild(slider);
-        setFrequency(slider, band.frequency);
-        setGain(slider, band.gain);
+function setPresetSelect(bands: band[]) {
+    presetSelect.value = 'custom';
+    for(const preset in presetGains)
+        if(JSON.stringify(bands) === JSON.stringify(calculatePresetBands(preset))) {
+            presetSelect.value = preset;
+            break;
     }
 }
 
@@ -97,10 +113,23 @@ function getBands() {
     return bands;
 }
 
+function calculatePresetBands(preset: string) {
+    const bands: band[] = [];
+    presetGains[preset].forEach((gain, index) => {
+        bands.push({
+            frequency: 32 * 2 ** index,
+            gain: gain,
+        });
+    });
+    return bands;
+}
+
 function createSliderWithUpdater(x: number, y: number) {
     const slider = createSlider(x, y);
     slider.addEventListener('mouseup', () => {
-        sendMessage('modify', 'setBands', getBands());
+        const bands = getBands();
+        sendMessage('modify', 'setBands', bands);
+        setPresetSelect(bands);
     });
     return slider;
 }
