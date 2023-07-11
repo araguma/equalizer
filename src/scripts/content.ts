@@ -44,21 +44,7 @@ function handleModifyMessage(message: any, sendResponse: (response: any) => void
             modifiers.bands = message.data;
             break;
     }
-
-    audioContext = audioContext ?? new AudioContext();
-    audioContext.resume();
-    const equalizerChain = createEqualizerChain(audioContext, modifiers);
-    const mediaElements = document.querySelectorAll<HTMLMediaElement>('video, audio');
-    for(const mediaElement of mediaElements) {
-        const mediaElementSource = mediaElementSourceMap.has(mediaElement) ?
-            mediaElementSourceMap.get(mediaElement) as MediaElementAudioSourceNode:
-            audioContext.createMediaElementSource(mediaElement);
-        mediaElementSource.disconnect();
-        mediaElementSource.connect(equalizerChain.head);
-        mediaElementSourceMap.set(mediaElement, mediaElementSource);
-    }
-    equalizerChain.tail.connect(audioContext.destination);
-
+    updateEqualizerChain(modifiers);
     sendResponse(modifiers);
 }
 
@@ -74,6 +60,22 @@ function handleGetMessage(message: any, sendResponse: (response: any) => void) {
             sendResponse(document.title);
             break;
     }
+}
+
+function updateEqualizerChain(modifiers: modifiers) {
+    audioContext = audioContext ?? new AudioContext();
+    audioContext.resume();
+    const equalizerChain = createEqualizerChain(audioContext, modifiers);
+    const mediaElements = document.querySelectorAll<HTMLMediaElement>('video, audio');
+    for(const mediaElement of mediaElements) {
+        const mediaElementSource = mediaElementSourceMap.has(mediaElement) ?
+            mediaElementSourceMap.get(mediaElement) as MediaElementAudioSourceNode:
+            audioContext.createMediaElementSource(mediaElement);
+        mediaElementSourceMap.set(mediaElement, mediaElementSource);
+        mediaElementSource.disconnect();
+        mediaElementSource.connect(equalizerChain.head);
+    }
+    equalizerChain.tail.connect(audioContext.destination);
 }
 
 function createEqualizerChain(audioContext: AudioContext, modifiers: modifiers) {
