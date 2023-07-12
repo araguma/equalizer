@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/araguma/equalizer/compare/v1.0.0...v1.1.0) (2023-07-12)
+
+
+### Features
+
+* Decrease website url verbosity ([44eeb7c](https://github.com/araguma/equalizer/commit/44eeb7c863e0c754da9dca9b666fdf607c5a4da2))
+
 ## 1.0.0 (2023-07-11)
 
 
