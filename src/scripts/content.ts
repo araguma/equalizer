@@ -57,7 +57,7 @@ function handleGetMessage(message: any, sendResponse: (response: any) => void) {
             sendResponse(modifiers);
             break;
         case 'getWebsiteURL':
-            sendResponse(window.location.href);
+            sendResponse(window.location.hostname);
             break;
         case 'getWebsiteTitle':
             sendResponse(document.title);
