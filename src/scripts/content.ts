@@ -1,4 +1,4 @@
-// Duplicate modifiers type here because it is not possible to import types in content scripts.
+// Duplicate modifiers type declaration here because content scripts can't be modules   
 type modifiers = {
     mono: boolean;
     swap: boolean;
