@@ -34,7 +34,7 @@ closeButton.addEventListener('click', () => {
 });
 panel.addEventListener('click', async (event) => {
     panel.appendChild(createSliderWithUpdater(event.clientX, event.clientY, panel));
-    syncBands(getBands());
+    syncBandUI(getBands());
 });
 resetButton.addEventListener('click', async () => {
     setUI(await sendMessage('modify', 'reset'));
@@ -48,7 +48,7 @@ swapButton.addEventListener('click', async () => {
 presetSelect.addEventListener('change', async () => {
     if(presetSelect.value === 'custom')
         return;
-    syncBands(calculatePresetBands(presetSelect.value));
+    syncBandUI(calculatePresetBands(presetSelect.value));
 });
 
 async function sendMessage(type: string, content: string, data?: any) {
@@ -64,6 +64,7 @@ function setUI(modifiers: modifiers) {
     setBands(modifiers.bands);
     setMono(modifiers.mono);
     setSwap(modifiers.swap);
+    setPresetSelect(modifiers.bands);
 }
 
 function setBands(bands: band[]) {
@@ -74,8 +75,6 @@ function setBands(bands: band[]) {
         setFrequency(slider, band.frequency);
         setGain(slider, band.gain);
     }
-
-    setPresetSelect(bands);
 }
 
 function setMono(enabled: boolean) {
@@ -109,8 +108,10 @@ function getBands() {
     return bands;
 }
 
-async function syncBands(bands: band[]) {
-    setBands(await sendMessage('modify', 'setBands', bands));
+async function syncBandUI(bands: band[]) {
+    const syncedBands = await sendMessage('modify', 'setBands', bands);
+    setBands(syncedBands);
+    setPresetSelect(syncedBands);
 }
 
 function calculatePresetBands(preset: string) {
@@ -127,7 +128,7 @@ function calculatePresetBands(preset: string) {
 function createSliderWithUpdater(x: number, y: number, boundingBox: HTMLElement) {
     const slider = createSlider(x, y, boundingBox);
     slider.addEventListener('change', () => {
-        syncBands(getBands());
+        syncBandUI(getBands());
     });
     return slider;
 }
