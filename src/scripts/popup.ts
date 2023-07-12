@@ -48,15 +48,7 @@ swapButton.addEventListener('click', async () => {
 presetSelect.addEventListener('change', async () => {
     if(presetSelect.value === 'custom')
         return;
-
-    const bands: band[] = [];
-    presetGains[presetSelect.value].forEach((gain, index) => {
-        bands.push({
-            frequency: 32 * 2 ** index,
-            gain: gain,
-        });
-    });
-    syncBands(bands);
+    syncBands(calculatePresetBands(presetSelect.value));
 });
 
 async function sendMessage(type: string, content: string, data?: any) {
